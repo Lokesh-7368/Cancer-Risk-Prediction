@@ -3,7 +3,7 @@ Cancer Risk Level Predictor - Main Application
 ================================================
 Author  : Lokesh
 Model   : Optuna-Tuned Class-Weighted XGBoost
-Accuracy: 88% | High-Risk Recall: 82% (9/11 correct)
+Accuracy: 86% | High-Risk Recall: 45% (9/20 correct)
 Deploy  : Streamlit Community Cloud
 """
 
@@ -76,7 +76,8 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("""
 **Project by:** Lokesh 
 **Model:** XGBoost (Class-Weighted)  
-**Accuracy:** 88%  
+**Accuracy:** 86%  
+**High-Risk Recall:** 45% (9/20)  
 **Dataset:** 2,000 patients  
 """)
 st.sidebar.markdown("---")
@@ -98,8 +99,8 @@ st.markdown('<p class="sub-header">ML-Powered Risk Assessment using Demographic,
 m1, m2, m3, m4, m5 = st.columns(5)
 m1.metric("Total Patients", f"{len(df):,}")
 m2.metric("Features", len(FEATURE_NAMES))
-m3.metric("Model Accuracy", "88%")
-m4.metric("High-Risk Recall", "82%")
+m3.metric("Model Accuracy", "86%")
+m4.metric("High-Risk Recall", "45%")
 m5.metric("Cancer Types", df['Cancer_Type'].nunique())
 
 st.markdown("---")
@@ -119,8 +120,9 @@ with left:
     
     - **Data Leakage Detection** — removed `Overall_Risk_Score` which was leaking target info  
     - **Class Imbalance** — Medium class dominates (78.7%), High is only 5.1%  
-    - **High-Risk Recall Optimization** — the model correctly identifies 9 out of 11 high-risk patients  
+    - **High-Risk Recall Optimization** — the model correctly identifies 9 out of 20 high-risk patients  
     - **Hyperparameter Tuning** — 40 Optuna trials with 3-fold stratified CV  
+    - **Current Final Output Insight** — class recalls are High: 0.45, Low: 0.77, Medium: 0.91  
     """)
 
     st.subheader("📊 Dataset at a Glance")
@@ -167,8 +169,8 @@ pipeline_data = pd.DataFrame({
     'Step': ['1. Basic Models', '2. Leakage Fix', '3. Random Forest', '4. Optuna RF',
              '5. SMOTE + Optuna', '6. High-Risk Focus', '7. XGBoost + SMOTE',
              '8. Optuna + XGB (Recall)', '9. Class-Weighted XGB', '10. Final Model'],
-    'Accuracy': ['99%*', '—', '84%', '83%', '83%', '80%', '85%', '61%', '64%', '88%'],
-    'High-Risk Correct': ['—', '—', '7/20', '5/20', '9/20', '12/20', '9/11', '13/20', '15/20', '9/11'],
+    'Accuracy': ['99%*', '—', '84%', '83%', '83%', '80%', '85%', '61%', '64%', '86%'],
+    'High-Risk Correct': ['—', '—', '7/20', '5/20', '9/20', '12/20', '9/20', '13/20', '15/20', '9/20'],
     'Key Action': [
         'Logistic + RF (data leakage detected)',
         'Removed Overall_Risk_Score column',
@@ -189,8 +191,8 @@ st.markdown("""
 <b>🔍 Pipeline Insight:</b> Step 1 gave 99% accuracy — too good to be true! 
 The <code>Overall_Risk_Score</code> column was directly derived from the target, causing 
 <b>data leakage</b>. After removing it, the true challenge of predicting high-risk patients 
-became apparent. The final model achieves the best balance: 88% overall accuracy with 
-82% recall on the critical high-risk class.
+became apparent. The final model currently reports <b>86% overall accuracy</b> with
+<b>45% High recall (9/20)</b>, <b>77% Low recall</b>, and <b>91% Medium recall</b>.
 </div>
 """, unsafe_allow_html=True)
 

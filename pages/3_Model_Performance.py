@@ -40,19 +40,19 @@ model_data = pd.DataFrame({
         'Class-weighted XGBoost',
         'Optuna-Tuned Class-weighted XGBoost '
     ],
-    'Accuracy': [0.84, 0.83, 0.80, 0.85, 0.64, 0.88],
-    'Macro F1': [0.64, 0.65, 0.65, 0.68, 0.54, 0.72],
-    'Weighted F1': [0.83, 0.83, 0.81, 0.85, 0.67, 0.87],
+    'Accuracy': [0.84, 0.83, 0.80, 0.85, 0.64, 0.86],
+    'Macro F1': [0.64, 0.65, 0.65, 0.68, 0.54, 0.71],
+    'Weighted F1': [0.83, 0.83, 0.81, 0.85, 0.67, 0.86],
     'Recall (High)': [0.35, 0.45, 0.60, 0.45, 0.75, 0.45],
-    'Recall (Low)': [0.58, 0.63, 0.74, 0.68, 0.82, 0.78],
-    'Recall (Medium)': [0.92, 0.89, 0.82, 0.92, 0.59, 0.92],
+    'Recall (Low)': [0.58, 0.63, 0.74, 0.68, 0.82, 0.77],
+    'Recall (Medium)': [0.92, 0.89, 0.82, 0.92, 0.59, 0.91],
     'Key Notes': [
         'Basic RF with SMOTE; decent baseline',
         'Optuna tuning improved High recall slightly',
         'Strong recall improvement for minority classes',
         'Higher precision and overall accuracy than RF',
         'Boosted minority recall, but accuracy dropped',
-        'Best overall balance between accuracy and recall'
+        'Best current overall balance in latest verified run'
     ]
 })
 
@@ -61,7 +61,7 @@ st.dataframe(model_data, use_container_width=True, hide_index=True)
 st.markdown("""
 <div style="background:#F0FFF4; border-left:5px solid #2D6A4F; padding:12px 16px; margin:10px 0; border-radius:0 8px 8px 0;">
 <b>🔍 Model Selection Rationale:</b> The final <b>Optuna-Tuned Class-Weighted XGBoost</b> was chosen because it 
-achieves the best <b>balance</b> — 88% accuracy with 0.72 macro F1. While the Class-Weighted XGBoost (Step 9) 
+achieves the best <b>current balance</b> — 86% accuracy with 0.71 macro F1. While the Class-Weighted XGBoost (Step 9) 
 had higher High-risk recall (0.75), its overall accuracy was only 64%. The final model provides 
 <b>reliable predictions across ALL classes</b> without sacrificing too much on any single class.
 </div>
@@ -109,25 +109,25 @@ st.markdown("---")
 st.subheader("3. Final Model: Optuna-Tuned Class-Weighted XGBoost")
 
 c1, c2, c3, c4 = st.columns(4)
-c1.metric("Overall Accuracy", "88%")
-c2.metric("Macro F1 Score", "0.72")
-c3.metric("Weighted F1", "0.87")
-c4.metric("High-Risk Recall", "82%")
+c1.metric("Overall Accuracy", "86%")
+c2.metric("Macro F1 Score", "0.71")
+c3.metric("Weighted F1", "0.86")
+c4.metric("High-Risk Recall", "45%")
 
 st.markdown("""
 ### Classification Report (Final Model)
 
 | Class | Precision | Recall | F1-Score | Support |
 |:------|----------:|-------:|---------:|--------:|
-| **High** | ~0.64 | 0.82 | 0.72 | ~20 |
-| **Low** | ~0.85 | 0.78 | 0.81 | ~65 |
-| **Medium** | ~0.91 | 0.92 | 0.91 | ~315 |
-| **Weighted Avg** | 0.88 | 0.88 | 0.87 | 400 |
+| **High** | 0.53 | 0.45 | 0.49 | 20 |
+| **Low** | 0.71 | 0.77 | 0.74 | 65 |
+| **Medium** | 0.92 | 0.91 | 0.91 | 315 |
+| **Weighted Avg** | 0.86 | 0.86 | 0.86 | 400 |
 """)
 
 st.markdown("""
 <div style="background:#F0FFF4; border-left:5px solid #2D6A4F; padding:12px 16px; margin:10px 0; border-radius:0 8px 8px 0;">
-<b>🔍 Key Achievement:</b> The model correctly identifies <b>9 out of 11 high-risk patients</b> in the test set. 
+<b>🔍 Key Achievement:</b> The model correctly identifies <b>9 out of 20 high-risk patients</b> in the test set. 
 In a medical context, this is crucial — missing a high-risk patient (false negative) is far more dangerous 
 than a false alarm. The class-weighting approach penalizes the model more for misclassifying minority classes, 
 resulting in better recall without SMOTE's synthetic data generation.
@@ -142,9 +142,9 @@ st.subheader("4. Confusion Matrix (Illustrative)")
 
 # Based on final model results from the report
 cm = np.array([
-    [9, 2, 0],     # High: 9 correct, 2 misclassified
-    [2, 51, 12],    # Low: 51 correct
-    [3, 10, 291]    # Medium: 291 correct
+    [9, 0, 11],
+    [0, 50, 15],
+    [8, 20, 287]
 ])
 labels = ['High', 'Low', 'Medium']
 
@@ -159,10 +159,10 @@ st.plotly_chart(fig, use_container_width=True)
 st.markdown("""
 <div style="background:#F0FFF4; border-left:5px solid #2D6A4F; padding:12px 16px; margin:10px 0; border-radius:0 8px 8px 0;">
 <b>🔍 Reading the Confusion Matrix:</b><br>
-• <b>High Risk:</b> 9 correctly predicted, 2 misclassified as Low — only 2 false negatives for the critical class!<br>
-• <b>Low Risk:</b> 51 correct, 2 wrongly flagged as High, 12 as Medium<br>
-• <b>Medium Risk:</b> 291 correct (most accurately predicted due to majority class), 3 as High, 10 as Low<br>
-• The main confusion is between <b>Low and Medium</b> classes, which is clinically less dangerous than missing High-risk patients.
+• <b>High Risk:</b> 9 correctly predicted, 11 misclassified as Medium.<br>
+• <b>Low Risk:</b> 50 correct, 15 shifted to Medium.<br>
+• <b>Medium Risk:</b> 287 correct, with spillover to both High and Low.<br>
+• The biggest confusion pattern is movement toward <b>Medium</b>, indicating the model is conservative around minority extremes.
 </div>
 """, unsafe_allow_html=True)
 
@@ -179,10 +179,10 @@ pipeline_steps = [
     ("4. Hyperparameter Tuning (Optuna)", "Optuna with 50 trials for RF. Accuracy: 83%, High recall barely improved to 5/20. Tuning alone isn't enough.", "⚙️"),
     ("5. SMOTE + Optuna RF", "Applied SMOTE to balance classes. Accuracy: 83%, High recall improved to 9/20. Better but still insufficient.", "⚖️"),
     ("6. Focus on High-Risk (SMOTE + RF)", "Explicitly optimized for High recall. Accuracy: 80%, High recall: 12/20. Progress but overall accuracy suffered.", "🎯"),
-    ("7. XGBoost + SMOTE", "Switched to XGBoost. Accuracy: 85%, but High recall only 9/11. XGBoost is more precise overall.", "🚀"),
+    ("7. XGBoost + SMOTE", "Switched to XGBoost. Accuracy: 85%, High recall around 9/20 in evaluated runs. XGBoost is more precise overall.", "🚀"),
     ("8. Optuna + XGBoost (Recall Focus)", "Optimized recall for High class. High recall: 13/20 (great!), but overall accuracy dropped to 61%.", "📊"),
     ("9. Class-Weighted XGBoost (No SMOTE)", "Used inverse-frequency class weights instead of SMOTE. High recall: 15/20 (best!), but accuracy only 64%.", "⚖️"),
-    ("10. Final: Optuna + Class-Weighted XGB", "Combined Optuna tuning with class weights. Accuracy: 88%, High recall: 9/11 (82%). BEST BALANCE. ✅", "🏆")
+    ("10. Final: Optuna + Class-Weighted XGB", "Combined Optuna tuning with class weights. Accuracy: 86%, High recall: 9/20 (45%). Best current balance in latest run. ✅", "🏆")
 ]
 
 for step, desc, icon in pipeline_steps:

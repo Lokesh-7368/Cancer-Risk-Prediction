@@ -15,7 +15,8 @@
 Advanced machine learning techniques can accurately predict cancer risk levels based on an individual's demographics and other health-related factors. This project helps identify at-risk individuals, supporting early interventions and effective healthcare strategies.
 
 ### Key Highlights
-- **88% Accuracy** with strong High-risk recall (82% — 9/11 correct)
+- **86% Accuracy** in the latest verified run
+- **High-risk recall: 45% (9/20)** with strong majority-class detection (Low: 77%, Medium: 91%)
 - **10-step iterative model development** with data leakage detection
 - **23+ EDA visualizations** with detailed insights at every step
 - **Interactive Streamlit app** with single + batch prediction
@@ -91,10 +92,16 @@ Cancer-Risk-Prediction/
 | 4 | Optuna RF | 83% | 45% (5/20) | Tuning alone isn't enough |
 | 5 | SMOTE + Optuna RF | 83% | 45% (9/20) | SMOTE helps slightly |
 | 6 | SMOTE + RF (High focus) | 80% | 60% (12/20) | Better recall, lower accuracy |
-| 7 | XGBoost + SMOTE | 85% | 45% (9/11) | XGBoost more precise |
+| 7 | XGBoost + SMOTE | 85% | 45% (9/20) | XGBoost more precise |
 | 8 | Optuna + XGB (Recall) | 61% | 65% (13/20) | Great recall, poor accuracy |
 | 9 | Class-Weighted XGB | 64% | 75% (15/20) | Best recall, worst accuracy |
-| **10** | **Optuna + CW XGB ✅** | **88%** | **82% (9/11)** | **Best balance** |
+| **10** | **Optuna + CW XGB ** | **86%** | **45% (9/20)** | **Best current overall balance** |
+
+### Latest Output Insights (From Final Notebook Run)
+
+- Class-wise recall is uneven: **High 0.45**, **Low 0.77**, **Medium 0.91**.
+- The model is strongest on the dominant Medium class and weaker on minority High-risk cases.
+- Confusion matrix shows most High-risk misses are shifted to Medium, suggesting threshold/recall-focused calibration as the next improvement step.
 
 ---
 
