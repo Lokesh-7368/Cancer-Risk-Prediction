@@ -204,3 +204,4 @@ with st.expander("📈 Feature Statistics Summary", expanded=False):
 
 st.markdown("---")
 st.caption("Navigate to **EDA Dashboard** for detailed analysis, **Predict Risk** for predictions, or **Model Performance** for evaluation metrics.")
+
