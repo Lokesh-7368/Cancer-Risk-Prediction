@@ -71,7 +71,7 @@ mode = st.radio("**Prediction Mode:**", ["🧑‍⚕️ Single Patient (Manual)"
 if mode == "🧑‍⚕️ Single Patient (Manual)":
     st.subheader("Enter Patient Details")
     presentation_note(
-        "When presenting this section, explain that values are intentionally grouped by domain "
+        "Explain that values are intentionally grouped by domain "
         "(demographic, lifestyle, environmental, and genetic) to mirror real clinical intake forms."
     )
     
